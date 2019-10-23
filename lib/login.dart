@@ -40,8 +40,8 @@ class _LoginPageState extends State<LoginPage> {
                   gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Colors.yellow[50], Colors.yellow[300], Colors.yellow[100]],
-                      stops: [0.3, 0.75, 1])),
+                      colors: [Colors.yellow[50], Colors.yellow[300], Colors.yellow[50]],
+                      stops: [0.3, 0.75, 0.98])),
               child: Column(
                 children: <Widget>[
                   //Logo
@@ -122,13 +122,13 @@ class _LoginPageState extends State<LoginPage> {
                                 width: 200,
                                 child: RaisedButton(
                                   onPressed:
-                                      _loginOnPressed, //getRememberValue,
+                                      _loginOnPressed, 
                                   child: Text(
                                     "Login",
                                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.w800),
                                   ),
                                   color: Colors.orange[100],
-                                  splashColor: Colors.lightGreenAccent[400], // change button color when pressed
+                                  splashColor: Colors.lightGreenAccent[400], 
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10), side: BorderSide(width: 2.0, color: Colors.yellow[900])
                                       ),
@@ -161,19 +161,19 @@ class _LoginPageState extends State<LoginPage> {
                           onTap: _onForget,
                           child: Text('Forgot Account',
                               style: TextStyle(
-                                  fontSize: 20, color: Colors.black, fontWeight: FontWeight.w600))),
+                                  fontSize: 20, color: Colors.blue[800], fontWeight: FontWeight.bold))),
                     ),
 
                     //Register Account
                     Padding(
-                        padding: EdgeInsets.only(left: 50),
+                        padding: EdgeInsets.only(left: 40),
                         child: GestureDetector(
                             onTap: () {
                               print("Register Account");
                             },
                             child: Text("Resgister New Account",
                                 style: TextStyle(
-                                    fontSize: 20, color: Colors.black, fontWeight: FontWeight.w600)))),
+                                    fontSize: 20, color: Colors.blue[800], fontWeight: FontWeight.bold)))),
                   ])
                 ],
               ))),
