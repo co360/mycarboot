@@ -1,6 +1,14 @@
+import 'package:mycarboot/register.dart';
+import 'package:mycarboot/forgotpassword.dart';
+import 'package:mycarboot/mainscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
+import 'package:http/http.dart' as http;
+import 'package:progress_dialog/progress_dialog.dart';
+
+
+String urlLogin = "http://myondb.com/myCarBootAdmin/php/login.php";
 
 void main() => runApp(Login());
 
@@ -40,8 +48,16 @@ class _LoginPageState extends State<LoginPage> {
                   gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Colors.yellow[50], Colors.yellow[300], Colors.yellow[50]],
-                      stops: [0.3, 0.75, 0.98])),
+                      colors: [
+                    Colors.yellow[50],
+                    Colors.yellow[300],
+                    Colors.yellow[50]
+                  ],
+                      stops: [
+                    0.3,
+                    0.75,
+                    0.98
+                  ])),
               child: Column(
                 children: <Widget>[
                   //Logo
@@ -83,9 +99,11 @@ class _LoginPageState extends State<LoginPage> {
                                   fillColor: Colors.white70,
                                   labelText: 'Enter Email',
                                   labelStyle: TextStyle(
-                                      fontSize: 22, color: Colors.black), 
+                                      fontSize: 22, color: Colors.black),
                                   errorStyle: TextStyle(
-                                      color: Colors.red, fontSize: 15, fontWeight: FontWeight.w600),
+                                      color: Colors.red,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600),
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(40),
                                       borderSide: BorderSide()))),
@@ -108,7 +126,9 @@ class _LoginPageState extends State<LoginPage> {
                                   labelStyle: TextStyle(
                                       fontSize: 22, color: Colors.black),
                                   errorStyle: TextStyle(
-                                      color: Colors.red, fontSize: 15, fontWeight: FontWeight.w600),
+                                      color: Colors.red,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600),
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(40),
                                       borderSide: BorderSide()))),
@@ -121,17 +141,20 @@ class _LoginPageState extends State<LoginPage> {
                                 height: 40,
                                 width: 200,
                                 child: RaisedButton(
-                                  onPressed:
-                                      _loginOnPressed, 
+                                  onPressed: _loginOnPressed,
                                   child: Text(
                                     "Login",
-                                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w800),
+                                    style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w800),
                                   ),
                                   color: Colors.orange[100],
-                                  splashColor: Colors.lightGreenAccent[400], 
+                                  splashColor: Colors.lightGreenAccent[400],
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10), side: BorderSide(width: 2.0, color: Colors.yellow[900])
-                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                      side: BorderSide(
+                                          width: 2.0,
+                                          color: Colors.yellow[900])),
                                 ))),
 
                         //Remember Password Checkbox
@@ -148,7 +171,9 @@ class _LoginPageState extends State<LoginPage> {
                             Padding(
                                 padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
                                 child: Text('Remember Me',
-                                    style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600)))
+                                    style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.w600)))
                           ],
                         ),
                       ])),
@@ -158,10 +183,20 @@ class _LoginPageState extends State<LoginPage> {
                     Padding(
                       padding: EdgeInsets.only(left: 10),
                       child: GestureDetector(
-                          onTap: _onForget,
+                          onTap: () {
+                              setState(() {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ForgotPassword()));
+                                print('Navigation to forgot password page');
+                              }); 
+                            },
                           child: Text('Forgot Account',
                               style: TextStyle(
-                                  fontSize: 20, color: Colors.blue[800], fontWeight: FontWeight.bold))),
+                                  fontSize: 20,
+                                  color: Colors.blue[800],
+                                  fontWeight: FontWeight.bold))),
                     ),
 
                     //Register Account
@@ -169,11 +204,19 @@ class _LoginPageState extends State<LoginPage> {
                         padding: EdgeInsets.only(left: 40),
                         child: GestureDetector(
                             onTap: () {
-                              print("Register Account");
+                              setState(() {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Register()));
+                                print('Navigation to register page');
+                              }); 
                             },
                             child: Text("Resgister New Account",
                                 style: TextStyle(
-                                    fontSize: 20, color: Colors.blue[800], fontWeight: FontWeight.bold)))),
+                                    fontSize: 20,
+                                    color: Colors.blue[800],
+                                    fontWeight: FontWeight.bold)))),
                   ])
                 ],
               ))),
@@ -225,10 +268,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _onForget() {
-    print("Forget Account");
-  }
-
   void _onCheck(bool value) {
     setState(() {
       _isCheck = value;
@@ -239,18 +278,33 @@ class _LoginPageState extends State<LoginPage> {
   void _loginOnPressed() {
     _email = _emailController.text;
     _password = _passwordController.text;
-    setState(() {
-      if (_formKey.currentState.validate() &&
-          _isEmailValid(_email) &&
-          _password.length > 4) {
-        print("successful login");
-      } else {
-        print("fail login");
-        Toast.show("Check your credentials", context,
-            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
-      }
-    });
+    if (_isEmailValid(_email) && (_password.length > 4)) {
+      ProgressDialog pr = new ProgressDialog(context,
+          type: ProgressDialogType.Normal, isDismissible: false);
+      pr.style(message: "Login in");
+      pr.show();
+      http.post(urlLogin, body: {
+        "email": _email,
+        "password": _password,
+      }).then((res) {
+        print(res.statusCode);
+        Toast.show(res.body, context,
+            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+        if (res.body == "Login success") {
+          pr.dismiss();
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => MainScreenPage(email: _email)));
+        }else{
+          pr.dismiss();
+        }
+        
+      }).catchError((err) {
+        pr.dismiss();
+        print(err);
+      });
+    } else {}
   }
+
 
   bool _isEmailValid(String email) {
     return RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email);
