@@ -49,7 +49,6 @@ class _MainScreenPageState extends State<MainScreenPage> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTapped,
         currentIndex: currentTabIndex,
-        //backgroundColor: Colors.blueGrey,
         type: BottomNavigationBarType.fixed,
 
         items: [

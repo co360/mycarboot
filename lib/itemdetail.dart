@@ -1,4 +1,4 @@
-/*import 'dart:async';
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -294,4 +294,4 @@ class _DetailInterfaceState extends State<DetailInterface> {
       print(err);
     });
   }
-}*/
+}

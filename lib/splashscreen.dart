@@ -1,4 +1,4 @@
-import 'package:mycarboot/login.dart';
+//import 'package:mycarboot/login.dart';
 import 'package:mycarboot/user.dart';
 import 'package:mycarboot/mainscreen.dart';
 import 'package:flutter/material.dart';
@@ -6,9 +6,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-
 String _email, _password;
-String urlAccess = "http://myondb.com/myCarBootAdmin/php/login.php";
+String urlLogin = "http://myondb.com/myCarBootAdmin/php/login.php";
 
 void main() => runApp(MyCarBoot());
  
@@ -36,7 +35,7 @@ class _MyCarBootSplashState extends State<MyCarBootSplash>{
         setState(() {
           //Navigator.pushReplacement(
             //context, MaterialPageRoute(builder: (context) => Login()));
-            _loadpref();
+            loadpref(this.context);
             print('Navigation to mainscreen page');
         });
       });
@@ -91,52 +90,69 @@ class _MyCarBootSplashState extends State<MyCarBootSplash>{
       );
   }
 
-  void _loadpref() async{
-    SharedPreferences sharedPref = await SharedPreferences.getInstance();
-
-    _email = (sharedPref.getString('email')??'');
-    _password = (sharedPref.getString('password')??'');
-    print(_email);
-    print(_password);
-    if (_isEmailValid(_email)){
-      http.post(urlAccess, body: {
-        "email" : _email,
-        "password" : _password
-      }).then((res){
-        print(res.statusCode);
-        var string = res.body;
-        List userInfo = string.split(",");
-        print(userInfo);
-        if (userInfo[0] == "success"){
-          User user = new User(
-            name: userInfo[1],
-            email: userInfo[2],
-            phone: userInfo[3],
-            radius: userInfo[4],
-            credit: userInfo[5],
-            rating: userInfo[6],
-          );
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreenPage(user: user)));
-        }
-        else{
-          User user = new User(
-            name: "not register",
-            email: "user@noregister",
-            phone: "not register",
-            radius: "15",
-            credit: "0",
-            rating: "0"
-          );
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreenPage(user: user)));
-        }
-      }).catchError((err) {
-        print(err);
-      });
-    }
+  void loadpref(BuildContext ctx) async {
+  print('Inside loadpref()');
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  _email = (prefs.getString('email')??'');
+  _password = (prefs.getString('pass')??'');
+  print("Splash:Preference");
+  print(_email);
+  print(_password);
+  if (_isEmailValid(_email??"no email")) {
+    //try to login if got email;
+    _onLogin(_email, _password, ctx);
+  } else {
+    //login as unregistered user
+    User user = new User(
+        name: "not register",
+        email: "user@noregister",
+        phone: "not register",
+        radius: "15",
+        credit: "0",
+        rating: "0");
+    Navigator.push(
+        ctx, MaterialPageRoute(builder: (context) => MainScreenPage(user: user)));
   }
+}
 
   bool _isEmailValid(String email) {
     return RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email);
   }
 
+  void _onLogin(String email, String pass, BuildContext ctx) {
+  http.post(urlLogin, body: {
+    "email": _email,
+    "password": _password,
+  }).then((res) {
+    print(res.statusCode);
+    var string = res.body;
+    List dres = string.split(",");
+    print("SPLASH:loading");
+    print(dres);
+    if (dres[0] == "success") {
+      User user = new User(
+          name: dres[1],
+          email: dres[2],
+          phone: dres[3],
+          radius: dres[4],
+          credit: dres[5],
+          rating: dres[6]);
+      Navigator.push(
+          ctx, MaterialPageRoute(builder: (context) => MainScreenPage(user: user)));
+    } else {
+      //allow login as unregistered user
+      User user = new User(
+          name: "not register",
+          email: "user@noregister",
+          phone: "not register",
+          radius: "15",
+          credit: "0",
+          rating: "0");
+      Navigator.push(
+          ctx, MaterialPageRoute(builder: (context) => MainScreenPage(user: user)));
+    }
+  }).catchError((err) {
+    print(err);
+  });
+}
 }

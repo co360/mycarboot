@@ -353,8 +353,8 @@ class _TabScreenPageState extends State<TabScreenPage> {
         itemlon: itemlongitude,
         ownercontact: ownercontact);
 
-    //Navigator.push(context,
-      //  SlideRightRoute(page: ItemDetail(item: item, user: widget.user)));
+    Navigator.push(context,
+       SlideRightRoute(page: ItemDetail(item: item, user: widget.user)));
   }
 
   void _onItemDelete() {
