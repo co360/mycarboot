@@ -178,6 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ])),
 
+
                   //Forgot Account
                   Row(children: <Widget>[
                     Padding(
@@ -292,8 +293,8 @@ class _LoginPageState extends State<LoginPage> {
             duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
         if (res.body == "Login success") {
           pr.dismiss();
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => MainScreenPage(email: _email)));
+          //Navigator.push(
+              //context, MaterialPageRoute(builder: (context) => MainScreenPage(email: _email)));
         }else{
           pr.dismiss();
         }
