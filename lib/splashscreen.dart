@@ -129,7 +129,7 @@ class _MyCarBootSplashState extends State<MyCarBootSplash>{
     List dres = string.split(",");
     print("SPLASH:loading");
     print(dres);
-    if (dres[0] == "success") {
+    if (dres[0] == "Login success") {
       User user = new User(
           name: dres[1],
           email: dres[2],

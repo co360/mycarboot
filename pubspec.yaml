@@ -28,6 +28,10 @@ dependencies:
   flutter_rating_bar:
   google_maps_flutter:
   geolocator:  
+  place_picker:
+  webview_flutter:
+  intl:
+  random_string:
   
     
 

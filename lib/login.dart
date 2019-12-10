@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:http/http.dart' as http;
 import 'package:progress_dialog/progress_dialog.dart';
+import 'user.dart';
 
 
 String urlLogin = "http://myondb.com/myCarBootAdmin/php/login.php";
@@ -115,6 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: TextFormField(
                               keyboardType: TextInputType.emailAddress,
                               controller: _passwordController,
+                              obscureText: true,
                               validator: (String value) {
                                 if (value.isEmpty)
                                   return "Please Enter Password";
@@ -149,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                                         fontWeight: FontWeight.w800),
                                   ),
                                   color: Colors.orange[100],
-                                  splashColor: Colors.lightGreenAccent[400],
+                                  //splashColor: Colors.lightGreenAccent[400],
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                       side: BorderSide(
@@ -230,7 +232,7 @@ class _LoginPageState extends State<LoginPage> {
     if (value) {
       if (_isEmailValid(email) && password.length > 4) {
         await sharedPref.setString('email', email);
-        await sharedPref.setString('password', password);
+        await sharedPref.setString('pass', password);
         Toast.show("Preferences have been saved", context,
             duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
       } else {
@@ -254,8 +256,8 @@ class _LoginPageState extends State<LoginPage> {
     SharedPreferences sharedPref = await SharedPreferences.getInstance();
 
     String _email = sharedPref.getString('email');
-    String _password = sharedPref.getString('password');
-    if (_email.length > 1) {
+    String _password = sharedPref.getString('pass');
+    if (_email != null) {
       _emailController.text = _email;
       _passwordController.text = _password;
       setState(() {
@@ -289,12 +291,18 @@ class _LoginPageState extends State<LoginPage> {
         "password": _password,
       }).then((res) {
         print(res.statusCode);
+        var string = res.body;
+        List dres = string.split(",");
+        print(dres);
         Toast.show(res.body, context,
             duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-        if (res.body == "Login success") {
+        if (dres[0] == "Login success") {
           pr.dismiss();
-          //Navigator.push(
-              //context, MaterialPageRoute(builder: (context) => MainScreenPage(email: _email)));
+          User user = new User(name: dres[1],email: dres[2],phone:dres[3],radius: dres[4],credit: dres[5],rating: dres[6]);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MainScreenPage(user: user)));
         }else{
           pr.dismiss();
         }
