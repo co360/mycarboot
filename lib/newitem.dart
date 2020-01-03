@@ -13,10 +13,10 @@ import 'package:place_picker/place_picker.dart';
 
 File _image;
 String pathAsset = 'assets/images/sliverwork.jpg';
-String urlUpload = "http://slumberjer.com/myhelper/php/upload_job.php";
-String urlgetuser = "http://slumberjer.com/myhelper/php/get_user.php";
+String urlUpload = "http://myondb.com/myCarBootAdmin/php/upload_item.php";
+String urlgetuser = "http://myondb.com/myCarBootAdmin/php/get_user.php";
 
-TextEditingController _jobcontroller = TextEditingController();
+TextEditingController _itemcontroller = TextEditingController();
 final TextEditingController _desccontroller = TextEditingController();
 final TextEditingController _pricecontroller = TextEditingController();
 final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
@@ -29,10 +29,10 @@ class NewItem extends StatefulWidget {
   const NewItem({Key key, this.user}) : super(key: key);
 
   @override
-  _NewJobState createState() => _NewJobState();
+  _NewItemState createState() => _NewItemState();
 }
 
-class _NewJobState extends State<NewItem> {
+class _NewItemState extends State<NewItem> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -46,7 +46,7 @@ class _NewJobState extends State<NewItem> {
           body: SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.fromLTRB(40, 20, 40, 20),
-              child: CreateNewJob(widget.user),
+              child: CreateNewItem(widget.user),     
             ),
           )),
     );
@@ -64,15 +64,15 @@ class _NewJobState extends State<NewItem> {
   }
 }
 
-class CreateNewJob extends StatefulWidget {
+class CreateNewItem extends StatefulWidget {
   final User user;
-  CreateNewJob(this.user);
+  CreateNewItem(this.user);
 
   @override
-  _CreateNewJobState createState() => _CreateNewJobState();
+  _CreateNewItemState createState() => _CreateNewItemState();
 }
 
-class _CreateNewJobState extends State<CreateNewJob> {
+class _CreateNewItemState extends State<CreateNewItem> {
   String defaultValue = 'Pickup';
   @override
   void initState() {
@@ -96,12 +96,12 @@ class _CreateNewJobState extends State<CreateNewJob> {
                 fit: BoxFit.fill,
               )),
             )),
-        Text('Click on image above to take job picture'),
+        Text('Click on image above to take item picture'),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
             children: <Widget>[
-              new IconButton(iconSize: 40, icon: new Icon(Icons.directions_bike), onPressed: _changeJob),
+              new IconButton(iconSize: 40, icon: new Icon(Icons.directions_bike), onPressed: _changeItem),
                            new IconButton(iconSize: 40, icon: new Icon(Icons.fastfood), onPressed: _changeFood),
                                                       new IconButton(iconSize: 40, icon: new Icon(Icons.directions_bike), onPressed: null),
                                                       new IconButton(iconSize: 40, icon: new Icon(Icons.directions_bike), onPressed: null),
@@ -113,17 +113,17 @@ class _CreateNewJobState extends State<CreateNewJob> {
                                                    ),
                                                  ),
                                                  TextField(
-                                                     controller: _jobcontroller,
+                                                     controller: _itemcontroller,
                                                      keyboardType: TextInputType.emailAddress,
                                                      decoration: InputDecoration(
-                                                       labelText: 'Job Title',
+                                                       labelText: 'Item Title',
                                                        icon: Icon(Icons.title),
                                                      )),
                                                  TextField(
                                                      controller: _pricecontroller,
                                                      keyboardType: TextInputType.number,
                                                      decoration: InputDecoration(
-                                                       labelText: 'Job Price',
+                                                       labelText: 'Item Price',
                                                        icon: Icon(Icons.attach_money),
                                                      )),
                                                  TextField(
@@ -132,7 +132,7 @@ class _CreateNewJobState extends State<CreateNewJob> {
                                                      textInputAction: TextInputAction.previous,
                                                      maxLines: 3,
                                                      decoration: InputDecoration(
-                                                       labelText: 'Job Description',
+                                                       labelText: 'Item Description',
                                                        icon: Icon(Icons.info),
                                                      )),
                                                  SizedBox(
@@ -142,7 +142,7 @@ class _CreateNewJobState extends State<CreateNewJob> {
                                                      onTap: _loadmap,
                                                      child: Container(
                                                        alignment: Alignment.topLeft,
-                                                       child: Text("Job Location",
+                                                       child: Text("Item Location",
                                                            style: TextStyle(fontWeight: FontWeight.bold)),
                                                      )),
                                                  SizedBox(
@@ -167,11 +167,11 @@ class _CreateNewJobState extends State<CreateNewJob> {
                                                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
                                                    minWidth: 300,
                                                    height: 50,
-                                                   child: Text('Request New Job'),
+                                                   child: Text('Request New Item'),
                                                    color: Colors.deepOrangeAccent,
                                                    textColor: Colors.white,
                                                    elevation: 15,
-                                                   onPressed: _onAddJob,
+                                                   onPressed: _onAddItem,
                                                  ),
                                                ],
                                              );
@@ -184,19 +184,19 @@ class _CreateNewJobState extends State<CreateNewJob> {
                                              //_image = await ImagePicker.pickImage(source: ImageSource.gallery);
                                            }
                                          
-                                           void _onAddJob() {
+                                           void _onAddItem() {
                                              if (_image == null) {
                                                Toast.show("Please take picture", context,
                                                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
                                                return;
                                              }
-                                             if (_jobcontroller.text.isEmpty) {
-                                               Toast.show("Please enter job title", context,
+                                             if (_itemcontroller.text.isEmpty) {
+                                               Toast.show("Please enter item title", context,
                                                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
                                                return;
                                              }
                                              if (_pricecontroller.text.isEmpty) {
-                                               Toast.show("Please enter job price", context,
+                                               Toast.show("Please enter item price", context,
                                                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
                                                return;
                                              }
@@ -212,20 +212,20 @@ class _CreateNewJobState extends State<CreateNewJob> {
                                              http.post(urlUpload, body: {
                                                "encoded_string": base64Image,
                                                "email": widget.user.email,
-                                               "jobtitle": _jobcontroller.text,
-                                               "jobdesc": _desccontroller.text,
-                                               "jobprice": _pricecontroller.text,
+                                               "itemtitle": _itemcontroller.text,
+                                               "itemdesc": _desccontroller.text,
+                                               "itemprice": _pricecontroller.text,
                                                "latitude": _currentPosition.latitude.toString(),
                                                "longitude": _currentPosition.longitude.toString(),
                                                "credit": widget.user.credit,
-                                               "rating": widget.user.rating
+                                               //"rating": widget.user.rating
                                              }).then((res) {
                                                print(urlUpload);
                                                Toast.show(res.body, context,
                                                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
                                                if (res.body.contains("success")) {
                                                  _image = null;
-                                                 _jobcontroller.text = "";
+                                                 _itemcontroller.text = "";
                                                  _pricecontroller.text = "";
                                                  _desccontroller.text = "";
                                                  pr.dismiss();
@@ -307,11 +307,11 @@ class _CreateNewJobState extends State<CreateNewJob> {
                                              print(result);
                                            }
                                          
-                                           void _changeJob() {
-                                             _jobcontroller.text = "Runner";
+                                           void _changeItem() {
+                                             _itemcontroller.text = "Runner";
                                            }
                            
                              void _changeFood() {
-                               _jobcontroller.text = "Order Food";
+                               _itemcontroller.text = "Order Food";
   }
 }

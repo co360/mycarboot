@@ -1,40 +1,12 @@
-/*import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:mycarboot/mainscreen.dart';
-import 'package:mycarboot/user.dart';
-import 'package:progress_dialog/progress_dialog.dart';
-
-class TabScreenPage2 extends StatefulWidget {
-  final User user;
-
-  const TabScreenPage2({Key key,this.user});
-  _TabScreenPage2State createState() => _TabScreenPage2State();
-}
-
-class _TabScreenPage2State extends State<TabScreenPage2> {
-  GlobalKey<RefreshIndicatorState> refreshKey;
-
-  Widget build(BuildContext context) {
-    return MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: Scaffold(
-      resizeToAvoidBottomPadding: false,
-    )
-  );
-}
-}*/
-
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:mycarboot/newitem.dart';
+//import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'newitem.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/services.dart';
-import 'package:mycarboot/register.dart';
-import 'package:mycarboot/user.dart';
+import 'register.dart';
+import 'user.dart';
 import 'package:toast/toast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 double perpage = 1;
@@ -76,8 +48,25 @@ class _TabScreen2State extends State<TabScreenPage2> {
               child: Icon(Icons.add),
               backgroundColor: Colors.deepOrange,
               elevation: 2.0,
-              onPressed: requestNewJob,
+              onPressed: requestNewItem,
               tooltip: 'Request new help',
+            ),
+            appBar: AppBar(
+              title: Text(
+                "MyCarbootAdmin",
+                style: TextStyle(fontSize: 24),
+              ),
+              flexibleSpace: Container(
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: <Color>[
+                      Colors.blueAccent,
+                      Colors.lightBlue,
+                      Colors.blue[900],
+                    ])),
+              ),
             ),
             body: RefreshIndicator(
               key: refreshKey,
@@ -93,27 +82,18 @@ class _TabScreen2State extends State<TabScreenPage2> {
                       return Container(
                         child: Column(
                           children: <Widget>[
+                            SizedBox(
+                              height: 5,
+                            ),
                             Stack(children: <Widget>[
-                              Image.asset(
-                                "assets/images/background.png",
-                                fit: BoxFit.fitWidth,
-                              ),
                               Column(
                                 children: <Widget>[
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Center(
-                                    child: Text("MyHelper",
-                                        style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white)),
-                                  ),
-                                  SizedBox(height: 10),
                                   Container(
-                                    width: 300,
+                                    width: 400,
                                     height: 140,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.blueAccent)),
                                     child: Card(
                                       child: Padding(
                                         padding: EdgeInsets.all(5.0),
@@ -123,8 +103,9 @@ class _TabScreen2State extends State<TabScreenPage2> {
                                           children: <Widget>[
                                             Row(
                                               children: <Widget>[
-                                                Icon(Icons.person,
-                                                    ),
+                                                Icon(
+                                                  Icons.person,
+                                                ),
                                                 SizedBox(
                                                   width: 5,
                                                 ),
@@ -142,8 +123,9 @@ class _TabScreen2State extends State<TabScreenPage2> {
                                             ),
                                             Row(
                                               children: <Widget>[
-                                                Icon(Icons.location_on,
-                                                    ),
+                                                Icon(
+                                                  Icons.location_on,
+                                                ),
                                                 SizedBox(
                                                   width: 5,
                                                 ),
@@ -154,14 +136,15 @@ class _TabScreen2State extends State<TabScreenPage2> {
                                             ),
                                             Row(
                                               children: <Widget>[
-                                                Icon(Icons.rounded_corner,
-                                                    ),
+                                                Icon(
+                                                  Icons.rounded_corner,
+                                                ),
                                                 SizedBox(
                                                   width: 5,
                                                 ),
                                                 Flexible(
                                                   child: Text(
-                                                      "Job Radius within " +
+                                                      "Item Radius within " +
                                                           widget.user.radius +
                                                           " KM"),
                                                 ),
@@ -169,8 +152,9 @@ class _TabScreen2State extends State<TabScreenPage2> {
                                             ),
                                             Row(
                                               children: <Widget>[
-                                                Icon(Icons.credit_card,
-                                                    ),
+                                                Icon(
+                                                  Icons.credit_card,
+                                                ),
                                                 SizedBox(
                                                   width: 5,
                                                 ),
@@ -190,16 +174,16 @@ class _TabScreen2State extends State<TabScreenPage2> {
                               ),
                             ]),
                             SizedBox(
-                              height: 4,
+                              height: 5,
                             ),
                             Container(
-                              color: Colors.deepOrange,
+                              color: Colors.blue[900],
                               child: Center(
-                                child: Text("Your Posted Jobs ",
+                                child: Text("Your Posted Items ",
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
+                                        color: Colors.lightBlue[50])),
                               ),
                             ),
                           ],
@@ -225,9 +209,9 @@ class _TabScreen2State extends State<TabScreenPage2> {
                       child: Card(
                         elevation: 2,
                         child: InkWell(
-                          onLongPress: () => _onJobDelete(
-                              data[index]['jobid'].toString(),
-                              data[index]['jobtitle'].toString()),
+                          onLongPress: () => _onItemDelete(
+                              data[index]['itemid'].toString(),
+                              data[index]['itemtitle'].toString()),
                           child: Padding(
                             padding: const EdgeInsets.all(2.0),
                             child: Row(
@@ -241,24 +225,24 @@ class _TabScreen2State extends State<TabScreenPage2> {
                                       image: DecorationImage(
                                     fit: BoxFit.fill,
                                     image: NetworkImage(
-                                    "http://slumberjer.com/myhelper/images/${data[index]['jobimage']}.jpg"
+                                    "http://myondb.com/myCarBootAdmin/images/${data[index]['itemimage']}.jpg"
                                   )))),
                                 Expanded(
                                   child: Container(
                                     child: Column(
                                       children: <Widget>[
                                         Text(
-                                            data[index]['jobtitle']
+                                            data[index]['itemtitle']
                                                 .toString()
                                                 .toUpperCase(),
                                             style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold)),
-                                        RatingBar(
+                                        /*RatingBar(
                                           itemCount: 5,
                                           itemSize: 12,
                                           initialRating: double.parse(
-                                              data[index]['jobrating']
+                                              data[index]['itemrating']
                                                   .toString()),
                                           itemPadding: EdgeInsets.symmetric(
                                               horizontal: 2.0),
@@ -266,15 +250,15 @@ class _TabScreen2State extends State<TabScreenPage2> {
                                             Icons.star,
                                             color: Colors.amber,
                                           ),
-                                        ),
+                                        ),*/
                                         SizedBox(
                                           height: 5,
                                         ),
-                                        Text("RM " + data[index]['jobprice']),
+                                        Text("RM " + data[index]['itemprice']),
                                         SizedBox(
                                           height: 5,
                                         ),
-                                        Text(data[index]['jobtime']),
+                                        Text(data[index]['itemtime']),
                                       ],
                                     ),
                                   ),
@@ -320,19 +304,20 @@ class _TabScreen2State extends State<TabScreenPage2> {
     }
   }
 
+//DONE
   Future<String> makeRequest() async {
-    String urlLoadJobs = "http://slumberjer.com/myhelper/php/load_job_user.php";
+    String urlLoadItems = "http://myondb.com/myCarBootAdmin/php/load_item_user.php";
      ProgressDialog pr = new ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: false);
-        pr.style(message: "Loading All Accepted Jobs");
+        pr.style(message: "Loading All Selling Items");
     pr.show();
-    http.post(urlLoadJobs, body: {
+    http.post(urlLoadItems, body: {
       "email": widget.user.email ?? "notavail",
 
     }).then((res) {
       setState(() {
         var extractdata = json.decode(res.body);
-        data = extractdata["jobs"];
+        data = extractdata["items"];
         perpage = (data.length / 10);
         print("data");
         print(data);
@@ -347,7 +332,7 @@ class _TabScreen2State extends State<TabScreenPage2> {
 
   Future init() async {
     if (widget.user.email=="user@noregister"){
-      Toast.show("Please register to view posted jobs", context,
+      Toast.show("Please register to view posted items", context,
           duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
       return;
     }else{
@@ -361,7 +346,8 @@ class _TabScreen2State extends State<TabScreenPage2> {
     return null;
   }
 
-  void requestNewJob() {
+//Done...
+  void requestNewItem() {
     print(widget.user.email);
     if (widget.user.email != "user@noregister") {
       Navigator.push(
@@ -371,28 +357,30 @@ class _TabScreen2State extends State<TabScreenPage2> {
                     user: widget.user,
                   )));
     } else {
-      Toast.show("Please Register First to request new job", context,
+      Toast.show("Please Register First to request new item", context,
           duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => RegisterPage()));
+              builder: (BuildContext context) => Register()));
     }
   }
 
-  void _onJobDelete(String jobid, String jobname) {
-    print("Delete " + jobid);
-    _showDialog(jobid, jobname);
+//Done ...
+  void _onItemDelete(String itemid, String itemname) {
+    print("Delete " + itemid);
+    _showDialog(itemid, itemname);
   }
 
-  void _showDialog(String jobid, String jobname) {
+//Done .........
+  void _showDialog(String itemid, String itemname) {
     // flutter defined function
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Delete " + jobname),
+          title: new Text("Delete " + itemname),
           content: new Text("Are your sure?"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
@@ -400,7 +388,7 @@ class _TabScreen2State extends State<TabScreenPage2> {
               child: new Text("Yes"),
               onPressed: () {
                 Navigator.of(context).pop();
-                deleteRequest(jobid);
+                deleteRequest(itemid);
               },
             ),
             new FlatButton(
@@ -415,14 +403,15 @@ class _TabScreen2State extends State<TabScreenPage2> {
     );
   }
 
-  Future<String> deleteRequest(String jobid) async {
-    String urlLoadJobs = "http://slumberjer.com/myhelper/php/delete_job.php";
+//DONE
+  Future<String> deleteRequest(String itemid) async {
+    String urlLoadItems = "http://myondb.com/myCarBootAdmin/php/delete_item.php";
     ProgressDialog pr = new ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: false);
-    pr.style(message: "Deleting Jobs");
+    pr.style(message: "Deleting Items");
     pr.show();
-    http.post(urlLoadJobs, body: {
-      "jobid": jobid,
+    http.post(urlLoadItems, body: {
+      "itemid": itemid,
     }).then((res) {
       print(res.body);
       if (res.body == "success") {

@@ -41,7 +41,7 @@ class _MainScreenPageState extends State<MainScreenPage> {
 
   @override
   Widget build(BuildContext context) {
-    //SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIOverlays([]);
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.blue[900]));
     return Scaffold(
@@ -54,15 +54,15 @@ class _MainScreenPageState extends State<MainScreenPage> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
-            title: Text("Jobs"),
+            title: Text("Items"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list, ),
-            title: Text("Posted Jobs"),
+            title: Text("Posted Items"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.event, ),
-            title: Text("My Jobs"),
+            title: Text("My Items"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person, ),
