@@ -24,7 +24,7 @@ class _TabScreen3State extends State<TabScreenPage3> {
 
   final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
   Position _currentPosition;
-  String _currentAddress = "Searching current location...";
+  String _currentAddress = "Searching current location..";
   List data;
 
   @override
